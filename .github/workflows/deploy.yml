@@ -1,4 +1,4 @@
-name: Build and Deploy to AWS Server
+name: End to End Deployment (Terraform + Docker)
 
 on:
   push:
@@ -22,14 +22,12 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Apply (Create Server)
-        env:
-          TF_VAR_key_name: ${{ secrets.EC2_KEY_NAME }}
+      - name: Terraform Init & Apply (Create Server)
         run: |
           terraform init
           terraform apply -auto-approve
 
-      - name: Get Server IP
+      - name: Get Server IP from Terraform
         id: tf_out
         run: echo "server_ip=$(terraform output -raw server_ip)" >> $GITHUB_OUTPUT
 
@@ -53,16 +51,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            # Docker Hub se latest image pull karein
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/mqb-it-app:latest
-            
-            # Purana container band aur delete karein (agar chal raha ho)
             docker stop mqb-app || true
             docker rm mqb-app || true
-            
-            # Naya container port 80 par run karein
             docker run -d --name mqb-app -p 80:80 --restart unless-stopped ${{ secrets.DOCKERHUB_USERNAME }}/mqb-it-app:latest
-            
-            # Faltu images clean karein
             docker image prune -f
-            
