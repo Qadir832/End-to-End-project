@@ -37,11 +37,6 @@ variable "aws_region" {
   default     = "ap-south-1"
 }
 
-variable "key_name" {
-  description = "EC2 key pair ka naam (AWS Console se pehle bana lein)"
-  type        = string
-}
-
 variable "instance_type" {
   description = "Free tier: t3.micro (750 hrs/month)."
   type        = string
@@ -115,12 +110,15 @@ resource "aws_security_group" "app_sg" {
 }
 
 # ------------------------------------------------------------
-# EC2 INSTANCE (Docker auto-install)
+# EC2 INSTANCE (Docker auto-install & Key hardcoded)
 # ------------------------------------------------------------
 resource "aws_instance" "app_server" {
   ami                         = data.aws_ssm_parameter.ubuntu_ami.value
   instance_type               = var.instance_type
-  key_name                    = var.key_name
+  
+  # Secret ka chakkar khatam, direct key ka naam yahan likh diya:
+  key_name                    = "mqb-server-key" 
+  
   vpc_security_group_ids      = [aws_security_group.app_sg.id]
   subnet_id                   = data.aws_subnets.default.ids[0]
   associate_public_ip_address = true
