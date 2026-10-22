@@ -1,5 +1,5 @@
 # ============================================================
-#  MQB IT Insights - AWS EC2 + Docker (Legacy Free Tier)
+#  MQB IT Insights - AWS EC2 + Docker (us-east-1 Region)
 # ============================================================
 
 terraform {
@@ -32,9 +32,9 @@ provider "aws" {
 # VARIABLES
 # ------------------------------------------------------------
 variable "aws_region" {
-  description = "AWS region (Mumbai default)"
+  description = "AWS region (Virginia default)"
   type        = string
-  default     = "ap-south-1"
+  default     = "us-east-1" # <-- Region updated to match your keys
 }
 
 variable "instance_type" {
@@ -44,7 +44,7 @@ variable "instance_type" {
 }
 
 variable "allowed_ssh_cidr" {
-  description = "SSH kis IP se allowed ho (production mein apna IP/32 daalein)"
+  description = "SSH kis IP se allowed ho"
   type        = string
   default     = "0.0.0.0/0"
 }
@@ -71,7 +71,7 @@ data "aws_subnets" "default" {
 }
 
 # ------------------------------------------------------------
-# SECURITY GROUP (Fixed: name_prefix use kiya hai)
+# SECURITY GROUP (name_prefix use kiya hai duplicate error se bachne ke liye)
 # ------------------------------------------------------------
 resource "aws_security_group" "app_sg" {
   name_prefix = "mqb-app-sg-"
@@ -110,13 +110,13 @@ resource "aws_security_group" "app_sg" {
 }
 
 # ------------------------------------------------------------
-# EC2 INSTANCE (Docker auto-install & Key hardcoded)
+# EC2 INSTANCE
 # ------------------------------------------------------------
 resource "aws_instance" "app_server" {
   ami                         = data.aws_ssm_parameter.ubuntu_ami.value
   instance_type               = var.instance_type
   
-  # Secret ka chakkar khatam, direct key ka naam yahan likh diya:
+  # Key direct hardcode ki hai
   key_name                    = "mqb-server-key" 
   
   vpc_security_group_ids      = [aws_security_group.app_sg.id]
@@ -156,11 +156,6 @@ resource "aws_instance" "app_server" {
 output "server_ip" {
   description = "EC2 public IP"
   value       = aws_instance.app_server.public_ip
-}
-
-output "ssh_command" {
-  description = "SSH karne ka command"
-  value       = "ssh -i <your-key.pem> ubuntu@${aws_instance.app_server.public_ip}"
 }
 
 output "app_url" {
