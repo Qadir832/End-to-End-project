@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+
+# GitHub Actions
+.github
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tf
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*.tfvars
+crash.log
+
+# Docs & editor
+README.md
+*.md
+.vscode
+.idea
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Local env
+.env
+.env.*
+
+# Logs
+*.log

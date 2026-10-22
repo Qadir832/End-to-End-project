@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meer Qadir Baloch | IT Insights Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0b1120;
+      --panel: #111c33;
+      --panel-2: #16233f;
+      --border: #23324f;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #22d3ee;
+      --green: #34d399;
+      --purple: #a78bfa;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 0%, #12224a 0%, var(--bg) 45%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* ---------- TOP BAR ---------- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+      background: rgba(11, 17, 32, 0.75);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+    }
+
+    .brand .logo {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      color: #06121f;
+      font-weight: 900;
+    }
+
+    nav {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--accent); }
+
+    /* ---------- LAYOUT ---------- */
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      background: linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(56,189,248,0.25), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      background: linear-gradient(90deg, var(--accent), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero .subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 640px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 1.3rem;
+    }
+
+    .tag {
+      font-size: 0.78rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(56, 189, 248, 0.08);
+      color: var(--accent);
+    }
+
+    /* ---------- STATS ---------- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.3rem 1.5rem;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+
+    .stat-card .label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .stat-card .value {
+      font-size: 1.9rem;
+      font-weight: 800;
+      margin-top: 0.3rem;
+    }
+    .stat-card:nth-child(1) .value { color: var(--accent); }
+    .stat-card:nth-child(2) .value { color: var(--green); }
+    .stat-card:nth-child(3) .value { color: var(--purple); }
+    .stat-card:nth-child(4) .value { color: #fbbf24; }
+
+    /* ---------- ARTICLE ---------- */
+    .article {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 2.5rem;
+    }
+
+    .article-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.3rem;
+      margin-bottom: 1.6rem;
+      flex-wrap: wrap;
+    }
+
+    .avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: #06121f;
+      flex-shrink: 0;
+    }
+
+    .meta .name {
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .meta .role {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .article h2 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      color: var(--accent-2);
+    }
+
+    .article h3 {
+      margin: 1.6rem 0 0.6rem;
+      font-size: 1.15rem;
+      color: var(--accent);
+    }
+
+    .article p {
+      color: #cbd5e1;
+      margin-bottom: 1rem;
+    }
+
+    .article ul {
+      margin: 0.5rem 0 1rem 1.4rem;
+      color: #cbd5e1;
+    }
+
+    .article li { margin-bottom: 0.45rem; }
+
+    blockquote {
+      border-left: 3px solid var(--accent);
+      background: rgba(56, 189, 248, 0.07);
+      padding: 1rem 1.3rem;
+      margin: 1.5rem 0;
+      border-radius: 0 10px 10px 0;
+      color: var(--accent-2);
+      font-style: italic;
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 2rem 1rem 1rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+    footer strong { color: var(--accent); }
+
+    /* ---------- MOBILE ---------- */
+    @media (max-width: 640px) {
+      header { padding: 0.9rem 1.2rem; }
+      nav { display: none; }
+      .hero, .article { padding: 1.6rem; }
+      .container { padding: 1.5rem 1rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== TOP BAR ========== -->
+  <header>
+    <div class="brand">
+      <div class="logo">MQB</div>
+      <span>Meer Qadir Baloch · IT Insights</span>
+    </div>
+    <nav>
+      <a href="#article">Article</a>
+      <a href="#topics">Topics</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="container">
+
+    <!-- ========== HERO ========== -->
+    <section class="hero">
+      <h1>Information Technology: Duniya Badalne Wali Taqat</h1>
+      <p class="subtitle">
+        Ye ek chhota sa dashboard-cum-article hai jisme main IT ki ahmiyat,
+        iske asraat aur mustaqbil ke rujhanaat (trends) par baat kar raha hoon.
+      </p>
+      <div class="tag-row">
+        <span class="tag">Cloud</span>
+        <span class="tag">DevOps</span>
+        <span class="tag">AI</span>
+        <span class="tag">Cyber Security</span>
+        <span class="tag">Web</span>
+      </div>
+    </section>
+
+    <!-- ========== STATS ========== -->
+    <section class="stats">
+      <div class="stat-card">
+        <div class="label">Industry</div>
+        <div class="value">$5T+</div>
+        <div class="label" style="margin-top:.3rem;">Global IT market</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Growth</div>
+        <div class="value">~8%</div>
+        <div class="label" style="margin-top:.3rem;">Yearly CAGR</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Jobs</div>
+        <div class="value">1M+</div>
+        <div class="label" style="margin-top:.3rem;">Open IT roles</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Devices</div>
+        <div class="value">30B+</div>
+        <div class="label" style="margin-top:.3rem;">Connected IoT</div>
+      </div>
+    </section>
+
+    <!-- ========== ARTICLE ========== -->
+    <article class="article" id="article">
+
+      <div class="article-header">
+        <div class="avatar">MQB</div>
+        <div class="meta">
+          <div class="name">Meer Qadir Baloch</div>
+          <div class="role">IT Enthusiast · Cloud & DevOps Learner</div>
+        </div>
+      </div>
+
+      <h2>Information Technology aur Hamari Zindagi</h2>
+
+      <p>
+        Information Technology (IT) aaj ke daur ki sabse taqatwar industry hai.
+        Ye sirf computer ya mobile chalane tak mehdood nahi, balki ye woh
+        bunyadi satoon (foundation) hai jis par banking, healthcare, education,
+        business, government aur yahan tak ke hamari rozana ki life tiki hui hai.
+      </p>
+
+      <p>
+        Aaj jab bhi hum bank se paisa transfer karte hain, kisi online store se
+        shopping karte hain, ya kisi app se ride book karte hain — in sab ke
+        peche IT ka ek mazboot system kaam kar raha hota hai. IT ne waqt aur
+        faasle dono chhote kar diye hain.
+      </p>
+
+      <h3 id="topics">IT ki Mukhtalif Shaabein (Branches)</h3>
+
+      <p>IT ek bohat wasee field hai jismein kai mukhtalif shobe shamil hain:</p>
+
+      <ul>
+        <li><strong>Software Development</strong> — apps, websites aur systems banane ka fun.</li>
+        <li><strong>Cloud Computing</strong> — AWS, Azure, GCP par data aur apps chalana.</li>
+        <li><strong>DevOps</strong> — development aur operations ko jod kar deployment ko automated aur reliable banana.</li>
+        <li><strong>Cyber Security</strong> — data ko hacks aur attacks se mehfooz rakhna.</li>
+        <li><strong>Artificial Intelligence</strong> — machine ko insaan ki tarah sochne aur seekhne ke qabil banana.</li>
+        <li><strong>Data Science</strong> — bade data se useful insights nikaalna.</li>
+      </ul>
+
+      <h3>IT ne Mazdoori aur Rozgar ko Kaise Badla?</h3>
+
+      <p>
+        IT ne naye rozgaar ke darwaze kholay hain. Aaj ek student ghar baith kar
+        freelancing, remote jobs aur online businesses se kama sakta hai. Lekin
+        saath hi ye zaroori hai ke wo seekhna kabhi na chore — kyunki IT har
+        chand maheenon mein badal raha hai.
+      </p>
+
+      <blockquote>
+        "IT mein kamyaabi usi ki hoti hai jo seekhne ka amal (process) kabhi
+        nahi chhorta — tools badalte rehte hain, soch (mindset) honi chahiye."
+      </blockquote>
+
+      <h3>Mustaqbil ke Rujhanaat (Future Trends)</h3>
+
+      <ul>
+        <li><strong>Cloud-Native Development</strong> — containers, Kubernetes aur serverless apps.</li>
+        <li><strong>AI aur Automation</strong> — repetitive kaam ab machine karegi, insaan sirf sochega.</li>
+        <li><strong>Zero-Trust Security</strong> — har device aur user ko verify karna zaroori.</li>
+        <li><strong>Edge Computing</strong> — data processing users ke qareeb.</li>
+      </ul>
+
+      <h3>Meri Naseehat</h3>
+
+      <p>
+        Agar aap IT mein aana chahte hain to ek field chun ke usme gehrai
+        (depth) tak jayein. Projects banayein, GitHub par apna kaam share karein,
+        aur community se seekhein. Jo cheezein sabse zyada matter karti hain
+        wo hain: <strong>consistency, practice aur curiosity</strong>.
+      </p>
+
+      <p>
+        IT aisi taqat hai jo kisi ek mulk ya tabqe ki nahi — ye sab ke liye hai,
+        bas sawaal ye hai ke aap is se seekhne ke liye tayyar hain ya nahi. 🚀
+      </p>
+
+    </article>
+
+  </div>
+
+  <!-- ========== FOOTER ========== -->
+  <footer id="contact">
+    <p>© 2026 <strong>Meer Qadir Baloch</strong> · Built with ❤️ · Deployed with Docker + CI/CD</p>
+    <p>End-to-End Cloud DevOps Project</p>
+  </footer>
+
+</body>
+</html>
