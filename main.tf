@@ -1,6 +1,5 @@
 # ============================================================
 #  MQB IT Insights - AWS EC2 + Docker (Legacy Free Tier)
-#  Account type: Pre-15 July 2025 (12-month free tier)
 # ============================================================
 
 terraform {
@@ -44,7 +43,7 @@ variable "key_name" {
 }
 
 variable "instance_type" {
-  description = "Free tier: t3.micro (750 hrs/month). t2.micro bhi chalega."
+  description = "Free tier: t3.micro (750 hrs/month)."
   type        = string
   default     = "t3.micro"
 }
@@ -56,14 +55,14 @@ variable "allowed_ssh_cidr" {
 }
 
 # ------------------------------------------------------------
-# LATEST UBUNTU 24.04 LTS AMI (SSM se — hamesha updated)
+# LATEST UBUNTU 24.04 LTS AMI (SSM se)
 # ------------------------------------------------------------
 data "aws_ssm_parameter" "ubuntu_ami" {
   name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
 }
 
 # ------------------------------------------------------------
-# DEFAULT VPC + SUBNET (existing use karega, naya nahi banayega)
+# DEFAULT VPC + SUBNET
 # ------------------------------------------------------------
 data "aws_vpc" "default" {
   default = true
@@ -77,10 +76,10 @@ data "aws_subnets" "default" {
 }
 
 # ------------------------------------------------------------
-# SECURITY GROUP
+# SECURITY GROUP (Fixed: name_prefix use kiya hai)
 # ------------------------------------------------------------
 resource "aws_security_group" "app_sg" {
-  name        = "mqb-app-sg"
+  name_prefix = "mqb-app-sg-"
   description = "SSH + HTTP for MQB IT Insights"
   vpc_id      = data.aws_vpc.default.id
 
@@ -109,6 +108,10 @@ resource "aws_security_group" "app_sg" {
   }
 
   tags = { Name = "mqb-app-sg" }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # ------------------------------------------------------------
@@ -124,7 +127,7 @@ resource "aws_instance" "app_server" {
 
   root_block_device {
     volume_type = "gp3"
-    volume_size = 8   # Free tier: 30 GB tak allowed, 8 GB kaafi hai
+    volume_size = 8 
     encrypted   = true
   }
 
@@ -136,7 +139,6 @@ resource "aws_instance" "app_server" {
     systemctl enable --now docker
     usermod -aG docker ubuntu
 
-    # Docker ready hone ka wait
     until docker info >/dev/null 2>&1; do sleep 2; done
     echo "Docker installed successfully" > /var/log/mqb-setup.log
   EOF
@@ -154,7 +156,7 @@ resource "aws_instance" "app_server" {
 # OUTPUTS
 # ------------------------------------------------------------
 output "server_ip" {
-  description = "EC2 public IP — browser mein kholen"
+  description = "EC2 public IP"
   value       = aws_instance.app_server.public_ip
 }
 
